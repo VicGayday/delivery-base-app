@@ -1,0 +1,20 @@
+:root {
+  --font-family: Inter;
+
+  --font-size-m: 12px;
+  --line-height: normal;
+  --font-m: var(--font-size-m) / var(--line-height) var(--font-family);
+
+  --font-size-s: 8px;
+  --font-s: var(--font-size-s) / var(--line-height) var(--font-family);
+
+  --navbar-height: 52px;
+
+  --text-primary: #000;
+  --text-secondary: #fff;
+
+  --background-primary: #e2e1e1;
+  --background-secondary: #d9d9d9;
+  --background-navbar: #165996;
+  --background-input: #fff;
+}

@@ -1,27 +1,42 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Login from '../views/Login.vue'
-import Main from '../views/Main.vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
+import LoginForm from "../views/LoginForm.vue"
+import EventList from "../views/EventList.vue"
+import EventForm from "../views/EventForm.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/login"
+    redirect: "/login",
   },
   {
     path: "/login",
-    name: "Login",
-    component: Login,
+    name: "LoginForm",
+    component: LoginForm,
+    meta: {
+      layout: "login",
+    },
   },
   {
-    path: "/main",
-    name: "Main",
-    component: Main,
+    path: "/events",
+    name: "EventList",
+    component: EventList,
+    meta: {
+      layout: "main",
+    },
   },
-];
+  {
+    path: "/events/new",
+    name: "EventForm",
+    component: EventForm,
+    meta: {
+      layout: "main",
+    },
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 })
 
 export default router

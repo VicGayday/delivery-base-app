@@ -1,0 +1,16 @@
+@import "reset.css";
+@import "variables.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+body {
+  color: var(--text-primary);
+  font: var(--font-m);
+  font-style: normal;
+  font-weight: 400;
+}
+.container {
+  margin: auto;
+  max-width: 797px;
+  min-height: 546px;
+  background: var(--background-primary);
+}

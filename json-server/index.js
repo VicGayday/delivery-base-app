@@ -2,12 +2,13 @@ const fs = require("fs")
 const jsonServer = require("json-server")
 const path = require("path")
 
-const server = jsonServer.create() //создание json-server
+const server = jsonServer.create()
 
 const router = jsonServer.router(path.resolve(__dirname, "db.json"))
 
 server.use(jsonServer.defaults({}))
 server.use(jsonServer.bodyParser)
+
 // Нужно для небольшой задержки, чтобы запрос проходил не мгновенно, имитация реального апи
 server.use(async (req, res, next) => {
   await new Promise((res) => {
@@ -41,7 +42,6 @@ server.post("/login", (req, res) => {
 })
 
 // проверяем, авторизован ли пользователь
-// eslint-disable-next-line
 server.use((req, res, next) => {
   if (!req.headers.authorization) {
     //проверяет заголовки, которые присылаются в http-запросах
