@@ -16,7 +16,7 @@
         <div class="col"></div>
         <div class="col"></div>
       </div>
-      <div v-for="event in list" :key="event.id" class="row">
+      <div v-for="event in list" :key="event.id" class="row" :class="{ completed: event.status === OrderStatus.Completed }">
         <div class="box">{{ event.id }}</div>
         <div class="box">{{ event.name }}</div>
         <div class="box">{{ event.address }}</div>
@@ -29,7 +29,7 @@
           </button>
         </div>
         <div class="col">
-          <button class="btn" v-if="isAdmin" @click="eventStore.removeEvent(event)">
+          <button class="btn" v-if="isAdmin && event.status === OrderStatus.New" @click="markAsDone(event)">
             <SvgImage2 />
           </button>
         </div>
@@ -49,6 +49,7 @@ import { Event } from "@/store/event/types/event"
 import Loader from "@/components/ui/Loader.vue"
 import Modal from "@/components/ui/Modal.vue"
 import Dialog from "@/components/Dialog.vue"
+import { OrderStatus } from "@/store/user/types/user"
 
 export default defineComponent({
   name: "EventList",
@@ -76,6 +77,12 @@ export default defineComponent({
       }
     }
 
+    async function markAsDone(item: Event) {
+      if (item !== null && item.status === OrderStatus.New) {
+        await eventStore.modifyEvent(item)
+      }
+    }
+
       async function handleAnswer(answer: boolean) {
         if (answer && currentCustomer.value !== null) {
           await eventStore.removeEvent(currentCustomer.value)
@@ -89,7 +96,7 @@ export default defineComponent({
       visible.value = false
     }
 
-    return { eventStore, userStore, list, onRemove, isLoading, visible, close, currentCustomer, handleAnswer, isAdmin }
+    return { eventStore, userStore, list, onRemove, markAsDone, isLoading, visible, close, currentCustomer, handleAnswer, isAdmin, OrderStatus }
   },
 })
 </script>
@@ -145,6 +152,10 @@ export default defineComponent({
 .box:nth-child(6) {
   border-left: 0;
   flex-basis: 162px;
+}
+
+.completed {
+  color: rgba(0, 0, 0, 0.25);
 }
 .btn {
   width: 18px;

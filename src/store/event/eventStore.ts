@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import { api } from "@/api/api"
 import router from "@/router"
 import { Event } from "./types/event"
+import { OrderStatus } from "../user/types/user"
 
 export const useEventStore = defineStore({
   id: "eventStore",
@@ -47,5 +48,22 @@ export const useEventStore = defineStore({
         console.error("Navigation failed", error)
       }
     },
+
+    async modifyEvent(event: Event) {
+      try {
+        const response = await api.patch(`/events/${event.id}`, {
+          status: OrderStatus.Completed,
+        });
+        if (!response.data) {
+          throw new Error();
+        }
+        const i = this.eventsData.find((s: Event) => s.id === event.id);
+        if (i) {
+          i.status = OrderStatus.Completed;
+        }
+      } catch (error) {
+        console.error("Navigation failed", error);
+      }
+    }
   },
 })
