@@ -1,13 +1,18 @@
 import { defineStore } from "pinia"
 import { api } from "@/api/api"
 import router from "@/router"
-import { Event } from "./types/event"
+import { Event, SortOrder, EventSortField } from "./types/event"
 import { OrderStatus } from "../user/types/user"
+import format from "date-fns/format"
+import { ru } from "date-fns/locale"
 
 export const useEventStore = defineStore({
   id: "eventStore",
   state: () => ({
     eventsData: [] as Event[],
+    sort: EventSortField.ADDRESS,
+    order: "asc" as SortOrder,
+    isLoading: false,
   }),
 
   actions: {
@@ -17,15 +22,21 @@ export const useEventStore = defineStore({
         if (!response.data) {
           throw new Error()
         }
-        this.eventsData = response.data
+        const res = response.data
+        this.eventsData = res.map((item: any) => {
+          const strDate = format(item.date, "dd MMMM yyyy k:mm", { locale: ru })
+          return { ...item, date: strDate }
+        })
       } catch (error) {
         console.error("Navigation failed", error)
       }
     },
 
     async addEvent(event: Event) {
+      const eventBD = { ...event, date: parseInt(event.date) }
+
       try {
-        const response = await api.post("/events/", event)
+        const response = await api.post("/events/", eventBD)
         if (!response.data) {
           throw new Error()
         }
@@ -53,17 +64,49 @@ export const useEventStore = defineStore({
       try {
         const response = await api.patch(`/events/${event.id}`, {
           status: OrderStatus.Completed,
-        });
+        })
         if (!response.data) {
-          throw new Error();
+          throw new Error()
         }
-        const i = this.eventsData.find((s: Event) => s.id === event.id);
+        const i = this.eventsData.find((s: Event) => s.id === event.id)
         if (i) {
-          i.status = OrderStatus.Completed;
+          i.status = OrderStatus.Completed
         }
       } catch (error) {
-        console.error("Navigation failed", error);
+        console.error("Navigation failed", error)
       }
-    }
+    },
+
+    async sortEvents() {
+      this.isLoading = true
+      try {
+        const response = await api.get("/events", {
+          params: {
+            _sort: this.sort,
+            _order: this.order,
+          },
+        })
+        const res = response.data
+        this.eventsData = res.map((item: any) => {
+          const strDate = format(item.date, "dd MMMM yyyy k:mm", { locale: ru })
+          return { ...item, date: strDate }
+        })
+        this.isLoading = false
+
+        if (!response.data) {
+          throw new Error()
+        }
+      } catch (error) {
+        console.error("Navigation failed", error)
+      }
+    },
+
+    setSort(sort: EventSortField) {
+      this.sort = sort
+    },
+
+    setOrder(order: SortOrder) {
+      this.order = order
+    },
   },
 })

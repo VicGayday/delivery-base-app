@@ -3,11 +3,23 @@
     <div>Вы действительно хотите удалить заказ?</div>
     <div class="dialog">
       <div class="dialog-option">
-        <input id="radio-1" type="radio" name="radio" value="1" @change="emit('answer', true)"/>
+        <input
+          id="radio-1"
+          type="radio"
+          name="radio"
+          value="1"
+          @change="emit('answer', true)"
+        />
         <label for="radio-1">OK</label>
       </div>
       <div class="dialog-option">
-        <input id="radio-2" type="radio" name="radio" value="2" @change="emit('answer', false)" />
+        <input
+          id="radio-2"
+          type="radio"
+          name="radio"
+          value="2"
+          @change="emit('answer', false)"
+        />
         <label for="radio-2">Отмена</label>
       </div>
     </div>
@@ -20,10 +32,10 @@ import { defineComponent } from "vue"
 export default defineComponent({
   name: "Dialog",
   emits: ["answer"],
-  setup( props, { emit }) {
+  setup(props, { emit }) {
     return {
-      emit
-    };
+      emit,
+    }
   },
 })
 </script>
@@ -50,16 +62,22 @@ export default defineComponent({
   width: 78px;
   height: 27px;
   background-color: var(--background-input);
-  cursor: pointer;
 }
 
 .dialog input[type="radio"] {
   display: none;
 }
-
-/* .dialog input[type="radio"]:checked + label {
+.dialog-option label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.dialog input[type="radio"]:checked + label {
   opacity: 1;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #01519d;
-} */
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--background-primary);
+}
 </style>

@@ -3,7 +3,8 @@
     <div class="form center" v-if="isLoader"><Loader /></div>
 
     <form class="form" v-else @submit.prevent="submit">
-      <div class="msg"><Message :msg="errorMsg" /></div>
+      <div class="auth-error-warning" v-if="showMessage"><Message :msg="errorMsg" /></div>
+      <p class="auth-error-warning" v-if="isDataError">Убедитесь, что вы заполнили имя пользователя и/или пароль содержит не менее 8 символов</p>
       <input
         type="text"
         class="input"
@@ -22,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from "vue"
+import { defineComponent, reactive, computed, ref } from "vue"
 import { useLoginStore } from "@/store/login/loginStore"
 import { useUserStore } from "@/store/user/userStore"
 import Loader from "@/components/ui/Loader.vue"
@@ -41,6 +42,9 @@ export default defineComponent({
       isLoading: true,
       error: "",
     })
+     const isDataError = ref(false)
+     const showMessage = ref(false)
+
     const isValid = computed(() => {
       return ruleForm.password.length >= 8 && ruleForm.username !== ""
     })
@@ -60,10 +64,21 @@ export default defineComponent({
     })
 
     async function submit() {
+      isDataError.value = false;
+      showMessage.value = false;
       if (isValid.value) {
         await loginStore.setLogin(ruleForm)
         userStore.initAuthData()
+        if (loginStore.loginData?.error) {
+        showMessage.value = true;
+      } else {
+        showMessage.value = false;
       }
+      }
+      else {
+        isDataError.value = true;
+      }
+
     }
     return {
       submit,
@@ -73,6 +88,8 @@ export default defineComponent({
       userStore,
       errorMsg,
       isLoader,
+      isDataError,
+      showMessage,
     }
   },
 })
@@ -109,5 +126,8 @@ export default defineComponent({
   background: var(--background-input);
   margin-left: 94px;
   border: none;
+}
+.auth-error-warning {
+  color: #c90c0c;
 }
 </style>

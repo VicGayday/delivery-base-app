@@ -9,17 +9,22 @@
       <div class="row">
         <div class="box num">№</div>
         <div class="box">Имя клиента</div>
-        <div class="box">Адрес</div>
-        <div class="box">Дата заказа</div>
+        <div class="box">Адрес<Spin sort="address" /></div>
+        <div class="box">Дата заказа<Spin sort="date" /></div>
         <div class="box">Статус</div>
         <div class="box">Комментарий</div>
         <div class="col"></div>
         <div class="col"></div>
       </div>
-      <div v-for="event in list" :key="event.id" class="row" :class="{ completed: event.status === OrderStatus.Completed }">
-        <div class="box">{{ event.id }}</div>
+      <div
+        v-for="(event, index,) in list"
+        :key="event.id"
+        class="row"
+        :class="{ completed: event.status === OrderStatus.Completed }"
+      >
+        <div class="box">{{ index + 1 }}</div>
         <div class="box">{{ event.name }}</div>
-        <div class="box">{{ event.address }}</div>
+        <div class="box small">{{ event.address }}</div>
         <div class="box">{{ event.date }}</div>
         <div class="box">{{ event.status }}</div>
         <div class="box">{{ event.comment }}</div>
@@ -29,7 +34,11 @@
           </button>
         </div>
         <div class="col">
-          <button class="btn" v-if="isAdmin && event.status === OrderStatus.New" @click="markAsDone(event)">
+          <button
+            class="btn"
+            v-if="isAdmin && event.status === OrderStatus.New"
+            @click="markAsDone(event)"
+          >
             <SvgImage2 />
           </button>
         </div>
@@ -49,11 +58,12 @@ import { Event } from "@/store/event/types/event"
 import Loader from "@/components/ui/Loader.vue"
 import Modal from "@/components/ui/Modal.vue"
 import Dialog from "@/components/Dialog.vue"
+import Spin from "@/components/Spin.vue"
 import { OrderStatus } from "@/store/user/types/user"
 
 export default defineComponent({
   name: "EventList",
-  components: { SvgImage1, SvgImage2, Loader, Modal, Dialog },
+  components: { SvgImage1, SvgImage2, Loader, Modal, Dialog, Spin },
   setup() {
     const currentCustomer = ref<Event | null>(null)
     const visible = ref(false)
@@ -72,8 +82,8 @@ export default defineComponent({
 
     async function onRemove(item: Event) {
       if (item !== null) {
-        currentCustomer.value = item;
-        visible.value = true;
+        currentCustomer.value = item
+        visible.value = true
       }
     }
 
@@ -83,20 +93,31 @@ export default defineComponent({
       }
     }
 
-      async function handleAnswer(answer: boolean) {
-        if (answer && currentCustomer.value !== null) {
-          await eventStore.removeEvent(currentCustomer.value)
-        }
-        visible.value = false
+    async function handleAnswer(answer: boolean) {
+      if (answer && currentCustomer.value !== null) {
+        await eventStore.removeEvent(currentCustomer.value)
       }
-
-
+      visible.value = false
+    }
 
     function close() {
       visible.value = false
     }
 
-    return { eventStore, userStore, list, onRemove, markAsDone, isLoading, visible, close, currentCustomer, handleAnswer, isAdmin, OrderStatus }
+    return {
+      eventStore,
+      userStore,
+      list,
+      onRemove,
+      markAsDone,
+      isLoading,
+      visible,
+      close,
+      currentCustomer,
+      handleAnswer,
+      isAdmin,
+      OrderStatus,
+    }
   },
 })
 </script>
@@ -126,6 +147,13 @@ export default defineComponent({
   border: 1px solid var(--text-primary);
   border-bottom: none;
   padding: 10px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 16px;
+}
+.small {
+  font: var(--font-s);
 }
 .box:nth-child(1) {
   flex-basis: 64px;
@@ -147,7 +175,7 @@ export default defineComponent({
 
 .box:nth-child(5) {
   border-left: 0;
-  flex-basis: 77px;
+  flex-basis: 88px;
 }
 .box:nth-child(6) {
   border-left: 0;

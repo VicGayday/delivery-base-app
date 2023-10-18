@@ -1,5 +1,4 @@
 import axios from "axios"
-// import router from "../router"
 
 import { USER_LOCALSTORAGE_KEY } from "@/const"
 
@@ -12,12 +11,5 @@ const api = axios.create({
     authorization: btoa(encodeURIComponent(headerAuth)) || "",
   },
 })
-// api.interceptors.response.use(null, (error) => {
-//   if (error.response.status === 403) {
-//     router.push("/login")
-//   }
-
-//   return Promise.reject(error)
-// })
 
 export { api }

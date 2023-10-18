@@ -1,36 +1,31 @@
 <template>
   <form class="wrapper" @submit.prevent="submit">
     <div>Добавить заказ</div>
-    <div class="mb-3">
-      <input
-        v-model="inputs.name"
-        type="text"
-        class="input"
-        placeholder="Введите ваше имя"
-      />
-    </div>
-    <div class="mb-3">
-      <input
-        v-model="inputs.address"
-        type="text"
-        class="input"
-        placeholder="Введите ваш адрес"
-      />
-    </div>
-    <div class="mb-3">
-      <input
-        v-model="inputs.comment"
-        type="text"
-        class="input"
-        placeholder="Комметарий"
-      />
-    </div>
+    <input
+      v-model="inputs.name"
+      type="text"
+      class="input"
+      placeholder="Введите ваше имя"
+    />
+    <input
+      v-model="inputs.address"
+      type="text"
+      class="input"
+      placeholder="Введите ваш адрес"
+    />
+    <input
+      v-model="inputs.comment"
+      type="text"
+      class="input"
+      placeholder="Комметарий"
+    />
+    <div class="red" v-if="errorMessage">{{ errorMessage }}</div>
     <button type="submit" class="btn">Добавить заказ</button>
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue"
+import { defineComponent, reactive, ref } from "vue"
 import { useEventStore } from "@/store/event/eventStore"
 import { useUserStore } from "@/store/user/userStore"
 import { OrderStatus } from "@/store/user/types/user"
@@ -41,27 +36,32 @@ export default defineComponent({
   setup() {
     const eventStore = useEventStore()
     const userStore = useUserStore()
-    const data = new Date(Date.now())
+    const data = Date.now()
+
     const inputs = reactive({
-      id: Date.now().toString(),
-      date: `${data.getDate()} / ${
-        data.getMonth() + 1
-      } / ${data.getFullYear()}`,
+      id: Date.now(),
       name: userStore.userData.name,
       address: "",
+      date: data.toString(),
       status: OrderStatus.New,
       comment: "",
     })
 
-    const submit = () => {
-      eventStore.addEvent({ ...inputs })
+    const errorMessage = ref("")
 
-      inputs.name = ""
-      inputs.address = ""
-      inputs.comment = ""
+    const submit = () => {
+      if (inputs.name && inputs.address != "") {
+        eventStore.addEvent({ ...inputs })
+        inputs.name = ""
+        inputs.address = ""
+        inputs.comment = ""
+        errorMessage.value = ""
+      } else {
+        errorMessage.value = "Заполните адрес/имя пользователя"
+      }
     }
 
-    return { inputs, submit, eventStore, userStore }
+    return { inputs, submit, eventStore, userStore, errorMessage }
   },
 })
 </script>
@@ -88,5 +88,8 @@ export default defineComponent({
   background: var(--background-secondary);
   border: none;
   outline: none;
+}
+.red {
+  color: #c90c0c;
 }
 </style>

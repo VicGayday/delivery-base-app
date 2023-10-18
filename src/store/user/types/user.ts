@@ -5,8 +5,8 @@ export interface User {
 }
 
 export enum OrderStatus {
-  New = "Новый"
-  Completed = "Выполнен"
+  New = "Новый",
+  Completed = "Выполнен",
 }
 
 export interface UserSchema {
