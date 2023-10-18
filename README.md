@@ -1,4 +1,4 @@
-![Снимок экрана 2023-10-18 в 15 31 27](https://github.com/VicGayday/delivery-base-app/assets/61756803/a391b458-8596-4d31-a0b4-232cdc0bc751) - run the command "yarn start:dev" to start the project
+ - run the command "yarn start:dev" to start the project
 - This is an SPA showing some base with orders. A user with role admin can add/delete and change order status. A user with role user can only add new order.
 The orders in the table are sorted by date column and by address column. Also there is a validation on login page and on adding new order page.
 The app is implemented with Vue3, compositional API, Pinia, Vue Router and JSON server as backend imitation.
